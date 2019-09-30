@@ -1,6 +1,7 @@
 import os
 import argparse
 import logging
+import time
 logging.basicConfig(level=logging.INFO)
 
 _description = 'The program "letter_count.py" has the main goal to return the frequency of each letter of the alphabet (without distinction between upper and lower case) in a text specified in the command line as an input file and also provides options to print a histogram, skip specific parts of the text and print the basic stats of the text (e.g., number of characters, number of words, number of lines, etc.). This program also prints out the total elapsed time.'
@@ -13,6 +14,7 @@ def process(file_path):
 	assert os.path.isfile(file_path) #checks if the file is in the filesystem
 	
 	#if good open file	
+	start_time=time.time()
 	logging.info('Opening file %s...', file_path)
 	with open(file_path) as input_file:
 		data=input_file.read() #file is automatically closed at the exit. ALWAYS open files with 'with'
@@ -36,6 +38,8 @@ def process(file_path):
 	for ch in letters:
 		frequency_dict[ch]=frequency_dict[ch]/num_characters
 	print(frequency_dict)
+	elapsed_time=time.time()-start_time
+	print('Elapsed time =',elapsed_time, 's')
 
 if __name__=='__main__':
 	parser = argparse.ArgumentParser(description=_description)
