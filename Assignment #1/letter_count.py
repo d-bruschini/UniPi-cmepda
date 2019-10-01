@@ -23,7 +23,7 @@ def process(file_path,histo):
 	logging.info('Done. %d characters found.', len(data))
 	
 	#Initialize dictionary with lower case letters
-	letters = 'abcdefghijklmnoprstuvwxyz'
+	letters = 'abcdefghijklmnopqrstuvwxyz'
 	frequency_dict = {}
 	for ch in letters:
 		frequency_dict[ch]=0
