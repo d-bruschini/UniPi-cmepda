@@ -37,7 +37,7 @@ def process(file_path,histo):
 			pass
 	num_characters= float(sum(frequency_dict.values()))
 	if histo:
-		frequency=[] #creates two arrays from the dictionary (one with the letters, one with the frequencies)
+		frequency=[] #creates an array with the occurences from the dictionary
 		for ch in letters:
 			frequency.append(frequency_dict[ch])
 		indices = np.arange(len(letters)) #creates an array of len(letters) elements and each element is the i-th number of the array (indices[i]=i)
