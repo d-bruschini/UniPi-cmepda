@@ -2,6 +2,7 @@ import numpy as np
 from scipy.interpolate import InterpolatedUnivariateSpline
 from matplotlib import pyplot as plt
 from numpy import diff
+from scipy.stats import chisquare
 
 
 
@@ -18,8 +19,8 @@ class ProbabilityDensityFunction(InterpolatedUnivariateSpline):
         self.cdf = InterpolatedUnivariateSpline(x, ycdf)
         mask=diff(ycdf) > 0.0
         mask=np.append(mask,False)
-        print(mask)
-        print(ycdf[mask])
+        #print(mask)
+        #print(ycdf[mask])
         self.ppf = InterpolatedUnivariateSpline(ycdf[mask], x[mask])
 
     def prob(self, x1, x2):
@@ -33,12 +34,13 @@ class ProbabilityDensityFunction(InterpolatedUnivariateSpline):
         """
         return self.ppf(np.random.uniform(size=size))
     
-
+def distribution(x):
+    return 1./np.sqrt(np.pi)*np.exp(-(x**2))
 
 
 if __name__ == '__main__':
     x = np.linspace(-3., 3., 40)
-    y = 1./np.sqrt(np.pi)*np.exp(-(x**2))
+    y = distribution(x)
     pdf = ProbabilityDensityFunction(x, y)
     a = np.array([0.2, 0.6])
     print(pdf(a))
@@ -63,9 +65,16 @@ if __name__ == '__main__':
     plt.ylabel('ppf(x)')
 
     plt.figure('Sampling')
-    rnd = pdf.rnd(1000000)
-    plt.hist(rnd, bins=200)
-    
+    random_numbers=1000000
+    rnd = pdf.rnd(random_numbers)
+    bins=200
+    occurrences,binning,patches=plt.hist(rnd, bins)
+    binning2=np.array([(binning[i]+binning[i+1])/2 for i in range(0,len(binning)-1)])
+    bin_chi2=random_numbers*distribution(binning2)*(binning[len(binning)-1]-binning[0])/bins
+    chi2,p_value=chisquare(occurrences,bin_chi2)
+    string="Chi2 = {}, p-value = {}"
+    print(string.format(chi2,p_value))    
+
     print(pdf.prob(0.2,0.8))
 
     pdf = ProbabilityDensityFunction(x, y, 1)
@@ -90,8 +99,14 @@ if __name__ == '__main__':
     plt.ylabel('ppf(x)')
 
     plt.figure('Sampling2')
-    rnd = pdf.rnd(1000000)
-    plt.hist(rnd, bins=200)
+    random_numbers=1000000
+    rnd = pdf.rnd(random_numbers)
+    bins=200
+    occurrences,binning,patches=plt.hist(rnd, bins)
+    binning2=np.array([(binning[i]+binning[i+1])/2 for i in range(0,len(binning)-1)])
+    bin_chi2=random_numbers*distribution(binning2)*(binning[len(binning)-1]-binning[0])/bins
+    chi2,p_value=chisquare(occurrences,bin_chi2)
+    print(string.format(chi2,p_value))    
     
     print(pdf.prob(0.2,0.8))
 
