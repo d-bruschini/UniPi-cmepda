@@ -15,7 +15,7 @@ class ProbabilityDensityFunction(InterpolatedUnivariateSpline):
         """Constructor.
         """
         InterpolatedUnivariateSpline.__init__(self, x, y, None, [None]*2, k)
-        ycdf = np.array([self.integral(min(x), xcdf) for xcdf in x])
+        ycdf = np.array([self.integral(x[0], xcdf) for xcdf in x])
         self.cdf = InterpolatedUnivariateSpline(x, ycdf)
         mask=diff(ycdf) > 0.0
         mask=np.append(mask,False)
@@ -68,15 +68,15 @@ if __name__ == '__main__':
     random_numbers=1000000
     rnd = pdf.rnd(random_numbers)
     bins=200
-    occurrences,binning,patches=plt.hist(rnd, bins)
-    binning2=np.array([(binning[i]+binning[i+1])/2 for i in range(0,len(binning)-1)])
+    occurrences, binning, = plt.hist(rnd, bins)
+    binning2=0.5 * (binning[1:] + binning[:-1])
     bin_chi2=random_numbers*distribution(binning2)*(binning[len(binning)-1]-binning[0])/bins
     chi2,p_value=chisquare(occurrences,bin_chi2)
     string="Chi2 = {}, p-value = {}"
     print(string.format(chi2,p_value))    
 
     print(pdf.prob(0.2,0.8))
-
+"""
     pdf = ProbabilityDensityFunction(x, y, 1)
     a = np.array([0.2, 0.6])
     print(pdf(a))
@@ -108,6 +108,6 @@ if __name__ == '__main__':
     chi2,p_value=chisquare(occurrences,bin_chi2)
     print(string.format(chi2,p_value))    
     
-    print(pdf.prob(0.2,0.8))
+    print(pdf.prob(0.2,0.8))"""
 
     plt.show()
